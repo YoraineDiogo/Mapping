@@ -2,6 +2,7 @@ package com.example.a1diogy15.hellomap;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -35,6 +36,10 @@ import android.view.LayoutInflater;
 import android.widget.TextView;
 import android.widget.ListView;
 import android.content.Context;
+
+/*preferences*/
+import android.preference.PreferenceActivity;
+import android.os.Bundle;
 
 public class HelloMap extends Activity implements View.OnClickListener {
 
@@ -197,4 +202,34 @@ public class HelloMap extends Activity implements View.OnClickListener {
         return view;
     }
 
+    /*preferences*/
+    public class MyPrefsActivity extends PreferenceActivity
+    {
+        public void onCreate (Bundle savedInstanceState)
+        {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.preferences);
+        }
+    }
+
+    public void onStart()
+    {
+        super.onStart();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        double lat = Double.parseDouble ( prefs.getString("lat", "50.9") );
+        double lon = Double.parseDouble ( prefs.getString("lon", "-1.4") );
+        boolean autodownload = prefs.getBoolean("autodownload", true);
+        String pizzaCode = prefs.getString("pizza", "NONE");
+
+        // do something with the preference data...
+    }
+
+    public void onDestroy()
+    {
+        super.onDestroy();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean ("isRecording", isRecording);
+        editor.commit();
+    }
 }
